@@ -1,0 +1,23 @@
+{
+  "name": "Nihongo Sprint Pro",
+  "short_name": "Nihongo Pro",
+  "description": "日常溝通 × 旅遊會話：五十音（含濁音/拗音）、生活/旅遊會話、錄音跟讀、測驗與每日目標。",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0f14",
+  "theme_color": "#0b0f14",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "scope": "./"
+}

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nihongo Sprint Pro | 日常溝通 × 旅遊會話 (PWA)</title>
+<meta name="description" content="從零到日常溝通與旅遊會話：五十音（含濁音/拗音）、生活×旅遊會話、錄音跟讀、測驗、每日目標。">
+<meta name="theme-color" content="#0b0f14">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192">
+<link rel="icon" href="icons/icon-512.png" sizes="512x512">
+<style>
+  :root{--bg:#0b0f14;--card:#10161dCC;--text:#e6edf3;--muted:#94a3b8;--primary:#00e5a8;--accent:#7c4dff;--danger:#ff4d6d;--ok:#22c55e;--shadow:0 10px 30px rgba(0,0,0,.35);--radius:16px}
+  @media(prefers-color-scheme:light){:root{--bg:#f6f7fb;--card:#ffffffee;--text:#0b0f14;--muted:#475569;--shadow:0 10px 24px rgba(0,0,0,.08)}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Noto Sans TC,PingFang TC,Helvetica Neue,Arial,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;color:var(--text);
+    background:radial-gradient(1200px 800px at 80% -10%,rgba(124,77,255,.25),transparent 60%),radial-gradient(1200px 800px at -10% 120%,rgba(0,229,168,.2),transparent 60%),var(--bg);min-height:100dvh}
+  header{position:sticky;top:0;z-index:10;backdrop-filter:saturate(140%) blur(10px);background:linear-gradient(180deg,rgba(16,22,29,.8),rgba(16,22,29,.4),transparent);border-bottom:1px solid rgba(255,255,255,.06)}
+  .wrap{max-width:1100px;margin:0 auto;padding:16px 20px}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:36px;height:36px;border-radius:12px;background:conic-gradient(from 210deg,#7c4dff,#00e5a8);display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:var(--shadow)}
+  .grid{display:grid;gap:18px}
+  @media(min-width:900px){.grid{grid-template-columns:1.1fr .9fr}}
+  .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .hero{display:grid;gap:14px}.hero h2{margin:.2em 0;font-size:clamp(26px,2.6vw + 12px,40px)}
+  .badges{display:flex;gap:8px;flex-wrap:wrap}
+  .badge{padding:6px 10px;border-radius:999px;background:#0f172a;color:#cbd5e1;border:1px solid rgba(255,255,255,.1);font-size:12px}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  button{cursor:pointer;border:none;padding:12px 16px;border-radius:12px;font-weight:700;color:#0b0f14;background:linear-gradient(120deg,var(--primary),#7ef9d8);
+    box-shadow:0 8px 24px rgba(0,229,168,.35);transition:transform .08s ease}
+  button.secondary{background:#111827;color:#e5e7eb;border:1px solid rgba(255,255,255,.08);box-shadow:none}
+  button:active{transform:translateY(1px)}
+  .statbar{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+  .pill{background:#0f172a;color:#cbd5e1;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);display:flex;gap:8px;align-items:center}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .tab{padding:10px 12px;border-radius:10px;background:#0f172a;color:#cbd5e1;border:1px solid rgba(255,255,255,.1);cursor:pointer;font-weight:600}
+  .tab.active{background:linear-gradient(120deg,rgba(124,77,255,.25),rgba(0,229,168,.25));color:#fff;border-color:transparent}
+  .section{display:none}.section.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .fc{display:grid;gap:12px}
+  .cardbig{display:grid;place-items:center;aspect-ratio:16/10;border-radius:20px;background:radial-gradient(120% 120% at 20% 10%,rgba(124,77,255,.22),transparent 50%),radial-gradient(120% 120% at 80% 90%,rgba(0,229,168,.22),transparent 50%),#0b1220;border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);font-size:clamp(72px,9.5vw,120px);font-weight:900;color:white;user-select:none;position:relative;overflow:hidden}
+  .cardbig small{position:absolute;bottom:10px;right:12px;color:#cbd5e1;font-size:14px;opacity:.8}
+  .center{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+  .choice{padding:12px 14px;border-radius:12px;background:#111827;color:#e5e7eb;border:1px solid rgba(255,255,255,.08);cursor:pointer;font-weight:700}
+  .choice.correct{background:rgba(34,197,94,.2);border-color:#22c55e}
+  .choice.wrong{background:rgba(255,77,109,.2);border-color:#ff4d6d}
+  .prog{height:8px;background:#0f172a;border:1px solid rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+  .prog>div{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--primary))}
+  .two{display:grid;gap:12px}
+  @media(min-width:780px){.two{grid-template-columns:1fr 1fr}}
+  .list{display:grid;gap:8px;max-height:320px;overflow:auto;padding-right:6px}
+  .row{display:flex;justify-content:space-between;gap:8px;padding:10px 12px;border:1px dashed rgba(255,255,255,.12);border-radius:10px}
+  .tiny{font-size:12px;opacity:.8}.micro{font-size:12px;color:var(--muted)}
+  .success{color:var(--ok)}.danger{color:var(--danger)}
+  .tagz{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .tag{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:#0f172a;color:#cbd5e1;cursor:pointer}
+  .tag.active{border-color:transparent;background:linear-gradient(120deg,rgba(124,77,255,.25),rgba(0,229,168,.25));color:#fff}
+  .footer{margin:40px 0 30px;color:var(--muted);text-align:center;font-size:13px}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap" style="display:flex;align-items:center;gap:12px">
+      <div class="brand"><div class="logo">あ</div><b>Nihongo Sprint Pro</b></div>
+      <div class="pill" style="margin-left:auto"><input id="darkToggle" type="checkbox"> <label for="darkToggle" class="tiny">切換淺/深色</label></div>
+      <button class="secondary" id="installBtn" style="margin-left:8px;display:none">安裝 App</button>
+    </div>
+  </header>
+
+  <main class="wrap grid">
+    <section class="card hero">
+      <h2>目標：<b>日常溝通</b>＋<b>旅遊會話</b> 🚀</h2>
+      <div class="badges">
+        <div class="badge">🧠 五十音（含濁音/拗音）</div>
+        <div class="badge">🗣️ 生活 × 旅遊情境</div>
+        <div class="badge">🔊 TTS發音 × 🎙️ 跟讀</div>
+        <div class="badge">📈 SRS × 每日目標</div>
+      </div>
+      <div class="controls">
+        <button id="startQuick">開始快速課程</button>
+        <button class="secondary" id="resetBtn">重置學習資料</button>
+      </div>
+      <div class="statbar" id="stats">
+        <div class="pill">⏱️ 今日學習：<b id="todayMins">0</b> 分鐘</div>
+        <div class="pill">🔥 連勝：<b id="streak">0</b> 天</div>
+        <div class="pill">🏁 目標：<b id="goal">15</b> 分鐘/天</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="tabs" role="tablist">
+        <div class="tab active" data-tab="kana">① 五十音訓練</div>
+        <div class="tab" data-tab="phrases">② 生活／旅遊會話</div>
+        <div class="tab" data-tab="quiz">③ 測驗挑戰</div>
+        <div class="tab" data-tab="progress">④ 進度與設定</div>
+      </div>
+
+      <!-- Kana -->
+      <div class="section active" id="kana">
+        <div class="tagz" id="kanaPacks">
+          <div class="tag active" data-pack="basic">基礎 50 音</div>
+          <div class="tag" data-pack="dakuten">濁音/半濁音（が/ざ/だ/ば/ぱ）</div>
+          <div class="tag" data-pack="youon">拗音（きゃ/しゅ/ちゃ...）</div>
+          <div class="tag" data-pack="katakana">片假名（外來語）</div>
+        </div>
+        <div class="two">
+          <div class="fc">
+            <div class="prog"><div id="kanaProg"></div></div>
+            <div class="cardbig" id="kanaCard" aria-live="polite">あ<small id="kanaHint">Hiragana</small></div>
+            <div class="center" id="kanaChoices"></div>
+            <div class="center">
+              <button id="playKanaAudio" class="secondary">🔊 發音</button>
+              <button id="toggleSet" class="secondary">切換：平/片假名</button>
+              <button id="showHint" class="secondary">提示</button>
+            </div>
+            <div class="micro" id="kanaFeedback">點選正確的羅馬音。</div>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">字庫</h3>
+            <div class="list" id="kanaList"></div>
+            <p class="micro">✅ 綠色＝已熟；紅色＝待加強（依你的作答與間隔重複）。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phrases -->
+      <div class="section" id="phrases">
+        <div class="tagz" id="phrasePacks">
+          <div class="tag active" data-pack="daily">日常溝通</div>
+          <div class="tag" data-pack="travel-stay">旅遊：住宿</div>
+          <div class="tag" data-pack="travel-dine">旅遊：餐飲</div>
+          <div class="tag" data-pack="travel-transport">旅遊：交通</div>
+          <div class="tag" data-pack="travel-shopping">旅遊：購物</div>
+          <div class="tag" data-pack="emergency">緊急狀況</div>
+        </div>
+        <div class="two">
+          <div class="card">
+            <h3 style="margin-top:0">跟讀練習</h3>
+            <p class="tiny">點句子可播放。按「🎙️ 跟讀」錄音比對（Chrome/Android 支援較佳）。</p>
+            <div class="list" id="phraseList"></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">小抄</h3>
+            <ul class="list" id="cheats"></ul>
+            <p class="micro">💡 助詞陷阱：<span class="tiny"><b>は</b>（主題）唸 <b>wa</b>；<b>へ</b>（方向）唸 <b>e</b>；<b>を</b>（受詞）唸 <b>o</b>。</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="section" id="quiz">
+        <div class="fc">
+          <div class="prog"><div id="quizProg"></div></div>
+          <div class="cardbig" id="quizPrompt">こんにちは</div>
+          <div class="center">
+            <input id="quizInput" placeholder="輸入中文或羅馬音（例：kon'nichiwa / 你好）" style="padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:#0b1220;color:#fff;min-width:280px">
+            <button id="quizCheck">送出</button>
+            <button class="secondary" id="quizSpeak">🔊 播放</button>
+          </div>
+          <div class="micro" id="quizFeedback">選擇上方的會話包 → 開始測驗。</div>
+        </div>
+      </div>
+
+      <!-- Stats & Settings -->
+      <div class="section" id="progress">
+        <div class="two">
+          <div class="card">
+            <h3 style="margin-top:0">統計</h3>
+            <div class="list">
+              <div class="row"><span>今日學習分鐘</span><b id="statMins">0</b></div>
+              <div class="row"><span>今日完成題數</span><b id="statItems">0</b></div>
+              <div class="row"><span>最佳連勝</span><b id="bestStreak">0</b></div>
+              <div class="row"><span>五十音熟悉率</span><b id="kanaRate">0%</b></div>
+              <div class="row"><span>會話熟悉率</span><b id="phraseRate">0%</b></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">設定</h3>
+            <div class="row"><span>每日目標（分鐘）</span><input id="goalInput" type="number" min="5" max="60" step="5" value="15" style="width:100px"></div>
+            <div class="row"><span>語音語者（Voice）</span><select id="voiceSelect" style="min-width:180px"></select></div>
+            <div class="row"><span>語速</span><input id="rate" type="range" min="0.6" max="1.4" step="0.05" value="1"><span id="rateVal" class="tiny">1.00x</span></div>
+            <div class="row"><span>清除全部資料</span><button class="secondary" id="dangerReset">我很確定</button></div>
+            <p class="micro">資料僅存於你的裝置（localStorage）。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="footer">Made for you with ❤️ | Nihongo Sprint Pro — 零基礎到旅遊會話</div>
+
+<script>
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display='inline-block'; });
+installBtn?.addEventListener('click', async ()=>{ if(!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installBtn.style.display='none'; });
+if('serviceWorker' in navigator){ window.addEventListener('load', ()=> navigator.serviceWorker.register('./sw.js')); }
+</script>
+
+<script>
+// ====== Data (kana + phrase packs) ======
+const HIRA_BASIC = [["あ","a"],["い","i"],["う","u"],["え","e"],["お","o"],
+["か","ka"],["き","ki"],["く","ku"],["け","ke"],["こ","ko"],
+["さ","sa"],["し","shi"],["す","su"],["せ","se"],["そ","so"],
+["た","ta"],["ち","chi"],["つ","tsu"],["て","te"],["と","to"],
+["な","na"],["に","ni"],["ぬ","nu"],["ね","ne"],["の","no"],
+["は","ha"],["ひ","hi"],["ふ","fu"],["へ","he"],["ほ","ho"],
+["ま","ma"],["み","mi"],["む","mu"],["め","me"],["も","mo"],
+["や","ya"],["ゆ","yu"],["よ","yo"],
+["ら","ra"],["り","ri"],["る","ru"],["れ","re"],["ろ","ro"],
+["わ","wa"],["を","o(wo)"],["ん","n"]];
+const HIRA_DAKUTEN = [["が","ga"],["ぎ","gi"],["ぐ","gu"],["げ","ge"],["ご","go"],
+["ざ","za"],["じ","ji"],["ず","zu"],["ぜ","ze"],["ぞ","zo"],
+["だ","da"],["ぢ","ji(=di)"],["づ","zu(=du)"],["で","de"],["ど","do"],
+["ば","ba"],["び","bi"],["ぶ","bu"],["べ","be"],["ぼ","bo"],
+["ぱ","pa"],["ぴ","pi"],["ぷ","pu"],["ぺ","pe"],["ぽ","po"]];
+const HIRA_YOUON = [["きゃ","kya"],["きゅ","kyu"],["きょ","kyo"],
+["しゃ","sha"],["しゅ","shu"],["しょ","sho"],
+["ちゃ","cha"],["ちゅ","chu"],["ちょ","cho"],
+["にゃ","nya"],["にゅ","nyu"],["にょ","nyo"],
+["ひゃ","hya"],["ひゅ","hyu"],["ひょ","hyo"],
+["みゃ","mya"],["みゅ","myu"],["みょ","myo"],
+["りゃ","rya"],["りゅ","ryu"],["りょ","ryo"],
+["ぎゃ","gya"],["ぎゅ","gyu"],["ぎょ","gyo"],
+["じゃ","ja"],["じゅ","ju"],["じょ","jo"],
+["びゃ","bya"],["びゅ","byu"],["びょ","byo"],
+["ぴゃ","pya"],["ぴゅ","pyu"],["ぴょ","pyo"]];
+const KATA_BASIC = [["ア","a"],["イ","i"],["ウ","u"],["エ","e"],["オ","o"],
+["カ","ka"],["キ","ki"],["ク","ku"],["ケ","ke"],["コ","ko"],
+["サ","sa"],["シ","shi"],["ス","su"],["セ","se"],["ソ","so"],
+["タ","ta"],["チ","chi"],["ツ","tsu"],["テ","te"],["ト","to"],
+["ナ","na"],["ニ","ni"],["ヌ","nu"],["ネ","ne"],["ノ","no"],
+["ハ","ha"],["ヒ","hi"],["フ","fu"],["ヘ","he"],["ホ","ho"],
+["マ","ma"],["ミ","mi"],["ム","mu"],["メ","me"],["モ","mo"],
+["ヤ","ya"],["ユ","yu"],["ヨ","yo"],
+["ラ","ra"],["リ","ri"],["ル","ru"],["レ","re"],["ロ","ro"],
+["ワ","wa"],["ヲ","o(wo)"],["ン","n"]];
+
+const PACKS = {
+  "daily":[
+    {jp:"はじめまして。",romaji:"hajimemashite",zh:"初次見面。"},
+    {jp:"よろしくお願いします。",romaji:"yoroshiku onegai shimasu",zh:"請多指教。"},
+    {jp:"ありがとうございます。",romaji:"arigatou gozaimasu",zh:"非常感謝。"},
+    {jp:"すみません。",romaji:"sumimasen",zh:"不好意思/對不起/勞駕。"},
+    {jp:"お願いします。",romaji:"onegai shimasu",zh:"拜託您/麻煩您。"},
+    {jp:"もう一度お願いします。",romaji:"mou ichido onegai shimasu",zh:"請再說一次。"},
+    {jp:"大丈夫です。",romaji:"daijoubu desu",zh:"沒關係/我可以。"},
+    {jp:"ゆっくり話してください。",romaji:"yukkuri hanashite kudasai",zh:"請說慢一點。"},
+    {jp:"日本語は少しだけ話せます。",romaji:"nihongo wa sukoshi dake hanasemasu",zh:"我只會說一點日文。"},
+    {jp:"トイレはどこですか。",romaji:"toire wa doko desu ka",zh:"洗手間在哪裡？"}
+  ],
+  "travel-stay":[
+    {jp:"予約しています、ヤンです。",romaji:"yoyaku shite imasu, Yan desu",zh:"我有預約，我姓楊。"},
+    {jp:"チェックインをお願いします。",romaji:"chekku in wo onegai shimasu",zh:"我要辦理入住。"},
+    {jp:"パスポートをお見せします。",romaji:"pasupooto wo omise shimasu",zh:"給您護照。"},
+    {jp:"荷物を預かってもらえますか。",romaji:"nimotsu wo azukatte moraemasu ka",zh:"可以幫我寄放行李嗎？"},
+    {jp:"朝食は何時からですか。",romaji:"choushoku wa nanji kara desu ka",zh:"早餐幾點開始？"},
+    {jp:"延泊できますか。",romaji:"enpaku dekimasu ka",zh:"可以延住嗎？"},
+    {jp:"チェックアウトは何時ですか。",romaji:"chekku auto wa nanji desu ka",zh:"退房時間是幾點？"}
+  ],
+  "travel-dine":[
+    {jp:"おすすめは何ですか。",romaji:"osusume wa nan desu ka",zh:"推薦是什麼？"},
+    {jp:"英語メニューはありますか。",romaji:"eigo menyuu wa arimasu ka",zh:"有英文菜單嗎？"},
+    {jp:"これを二つお願いします。",romaji:"kore wo futatsu onegai shimasu",zh:"這個我要兩份。"},
+    {jp:"辛くしないでください。",romaji:"karaku shinaide kudasai",zh:"請不要太辣。"},
+    {jp:"お会計お願いします。",romaji:"okaikei onegai shimasu",zh:"請買單。"},
+    {jp:"テイクアウトできますか。",romaji:"teiku auto dekimasu ka",zh:"可以外帶嗎？"}
+  ],
+  "travel-transport":[
+    {jp:"大阪駅までいくらですか。",romaji:"oosaka eki made ikura desu ka",zh:"到大阪站多少錢？"},
+    {jp:"この電車は難波へ行きますか。",romaji:"kono densha wa Namba e ikimasu ka",zh:"這班電車有到難波嗎？"},
+    {jp:"ICカードはどこで買えますか。",romaji:"ai shii kaado wa doko de kaemasu ka",zh:"IC卡在哪買？"},
+    {jp:"空港行きはどちらですか。",romaji:"kuukou yuki wa dochira desu ka",zh:"往機場方向在哪？"},
+    {jp:"ここで降ります。",romaji:"koko de orimasu",zh:"我在這裡下車。"},
+    {jp:"道に迷いました。助けてください。",romaji:"michi ni mayoi mashita. tasukete kudasai",zh:"我迷路了，請幫忙。"},
+    {jp:"地図で教えてください。",romaji:"chizu de oshiete kudasai",zh:"可以用地圖指給我看嗎？"}
+  ],
+  "travel-shopping":[
+    {jp:"いくらですか。",romaji:"ikura desu ka",zh:"多少錢？"},
+    {jp:"免税はできますか。",romaji:"menzei wa dekimasu ka",zh:"可以免稅嗎？"},
+    {jp:"試着できますか。",romaji:"shichaku dekimasu ka",zh:"可以試穿嗎？"},
+    {jp:"別のサイズはありますか。",romaji:"betsu no saizu wa arimasu ka",zh:"有別的尺寸嗎？"},
+    {jp:"同じものをもう一つ。",romaji:"onaji mono wo mou hitotsu",zh:"一樣的再來一個。"},
+    {jp:"クレジットカードは使えますか。",romaji:"kurejitto kaado wa tsukaemasu ka",zh:"可以刷卡嗎？"}
+  ],
+  "emergency":[
+    {jp:"具合が悪いです。",romaji:"guai ga warui desu",zh:"我身體不舒服。"},
+    {jp:"病院はどこですか。",romaji:"byouin wa doko desu ka",zh:"醫院在哪裡？"},
+    {jp:"助けてください。",romaji:"tasukete kudasai",zh:"請救救我。"},
+    {jp:"アレルギーがあります。",romaji:"arerugii ga arimasu",zh:"我有過敏。"},
+    {jp:"パスポートをなくしました。",romaji:"pasupooto wo nakushimashita",zh:"我把護照弄丟了。"},
+    {jp:"警察を呼んでください。",romaji:"keisatsu wo yonde kudasai",zh:"請叫警察。"}
+  ]
+};
+
+// ====== Storage ======
+const store = { load(){ return JSON.parse(localStorage.getItem("nihongo_sprint_pro") || "{}"); },
+  save(s){ localStorage.setItem("nihongo_sprint_pro", JSON.stringify(s)); } };
+let state = store.load();
+if(!state.ver){ state = {ver:3,set:"HIRA",kanaPack:"basic",phrasePack:"daily",srs:{},minutesToday:0,lastTick:Date.now(),streak:0,best:0,itemsToday:0,goal:15}; store.save(state); }
+function rollDay(){ const today=new Date().toDateString(); if(state.day!==today){ if(state.day){ const y=new Date(state.day); const diff=(new Date(today)-y)/86400000; if(diff===1 && state.minutesToday>=5){ state.streak=(state.streak||0)+1; } else if(diff>1){ state.streak=0; } state.best=Math.max(state.best||0,state.streak);} state.day=today; state.minutesToday=0; state.itemsToday=0; store.save(state);}}
+rollDay(); setInterval(()=>{ state.minutesToday += 0.1/60; store.save(state); renderStats(); }, 100);
+
+// ====== Helpers ======
+const $ = sel => document.querySelector(sel);
+const $$ = sel => [...document.querySelectorAll(sel)];
+const shuffle = a => { for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; };
+function coins(n=12){ const box=document.createElement("div"); box.style.position="fixed"; box.style.inset="0"; box.style.pointerEvents="none"; for(let i=0;i<n;i++){ const s=document.createElement("div"); s.style.width=s.style.height=(6+Math.random()*8)+"px"; s.style.borderRadius="2px"; s.style.background=`hsl(${Math.random()*360},80%,60%)`; s.style.position="absolute"; s.style.left=Math.random()*100+"%"; s.style.top="-10px"; s.animate([{transform:`translateY(0) rotate(0deg)`},{transform:`translateY(${110+Math.random()*40}vh) rotate(${360+Math.random()*360}deg)`}],{duration:700+Math.random()*600,easing:"cubic-bezier(.2,.6,.2,1)",fill:"forwards"}); box.appendChild(s);} document.body.appendChild(box); setTimeout(()=>box.remove(),1200);}
+
+// Tabs & UI
+$$(".tab").forEach(t=> t.addEventListener("click",()=>{ $$(".tab").forEach(x=>x.classList.remove("active")); $$(".section").forEach(x=>x.classList.remove("active")); t.classList.add("active"); $("#"+t.dataset.tab).classList.add("active"); }));
+$("#startQuick").addEventListener("click",()=>{ $$(".tab")[0].click(); coins(16); });
+$("#resetBtn").addEventListener("click",()=>{ if(confirm("確定重置五十音進度？（會保留會話與設定）")){ Object.keys(state.srs).forEach(k=>{ if(k.startsWith("kana:")) delete state.srs[k]; }); store.save(state); renderKanaList(); coins(8);} });
+$("#darkToggle").addEventListener("change",(e)=>{ document.documentElement.style.setProperty("--bg", e.target.checked? "#f6f7fb" : "#0b0f14"); });
+
+// Kana trainer
+let setName=state.set||"HIRA"; let kanaPack=state.kanaPack||"basic";
+const packsMap = {basic:HIRA_BASIC,dakuten:HIRA_DAKUTEN,youon:HIRA_YOUON,katakana:KATA_BASIC};
+const keyKana = ch => "kana:"+setName+":"+kanaPack+":"+ch;
+function srsOf(k){ if(!state.srs[k]) state.srs[k]={ease:2.5,next:0,correct:0,wrong:0}; return state.srs[k]; }
+function currentPool(){ let arr=packsMap[kanaPack]||HIRA_BASIC; if(setName==="KATA" && kanaPack!=="katakana") arr=KATA_BASIC; return arr; }
+function renderKanaChoices(ans){ const wrap=$("#kanaChoices"); wrap.innerHTML=""; ans.forEach(t=>{ const b=document.createElement("button"); b.className="choice"; b.textContent=t; wrap.appendChild(b); }); }
+function progressRate(list){ const now=Date.now(); const learned=list.filter(([ch])=>{ const s=srsOf(keyKana(ch)); return s.ease>2.6 && s.correct>=3 && s.next>now; }).length; return Math.round(learned/list.length*100); }
+function renderProgress(sel,rate){ const bar=document.querySelector(sel); if(bar) bar.style.width=rate+"%"; }
+function renderKanaList(){ const pool=currentPool(); const wrap=$("#kanaList"); wrap.innerHTML=""; pool.forEach(([ch,ro])=>{ const s=srsOf(keyKana(ch)); const rate=s.correct? Math.min(100, Math.round(s.correct/(s.correct+s.wrong)*100)) : 0; const row=document.createElement("div"); row.className="row"; row.innerHTML=`<div><b>${ch}</b> <span class="tiny">${ro}</span></div><div class="tiny ${rate>=70?'success':'danger'}">${rate}%</div>`; wrap.appendChild(row); }); $("#kanaRate").textContent = progressRate(pool)+"%"; }
+function nextKana(){ const pool=currentPool(); const now=Date.now(); const due=pool.filter(([ch])=> (srsOf(keyKana(ch)).next||0)<=now ); const pick = (arr)=>arr[Math.floor(Math.random()*arr.length)]; const [kana,romaji] = pick(due.length? due: pool); }
+</script>
+</body>
+</html>
